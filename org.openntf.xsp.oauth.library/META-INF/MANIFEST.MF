@@ -43,4 +43,5 @@ Export-Package: org.openntf.xsp.oauth,
  org.openntf.xsp.oauth.servlet,
  org.openntf.xsp.oauth.ssjs,
  org.openntf.xsp.oauth.util
-Require-Bundle: com.ibm.xsp.designer;bundle-version="8.5.2"
+Require-Bundle: com.ibm.xsp.designer;bundle-version="8.5.2",
+ com.ibm.xsp.extlib
