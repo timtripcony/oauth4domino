@@ -30,8 +30,11 @@ public class OAuthFacesContext extends DominoFacesContext {
 	public OAuthFacesContext(final FacesContext paramFacesContext) {
 		super(paramFacesContext);
 		if (_debug) {
-			System.out.println(getClass().getName() + " created from delegate of " + paramFacesContext.getClass().getName());
-			System.out.println("RenderKit: " + getRenderKit().getClass().getName());
+			try {
+				System.out.println(getClass().getName() + " created from delegate of " + paramFacesContext.getClass().getName());
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

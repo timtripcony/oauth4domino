@@ -22,15 +22,15 @@ import javax.faces.render.ResponseStateManager;
 import org.openntf.xsp.oauth.Activator;
 import com.sun.faces.renderkit.RenderKitImpl;
 
-public class OpenNTFRenderKit extends RenderKitImpl {
+public class OAuthRenderKit extends RenderKitImpl {
 	private final static boolean _debug = Activator._debug;
 	static {
 		if (_debug) {
-			System.out.println(OpenNTFRenderKit.class.getName() + " loaded");
+			System.out.println(OAuthRenderKit.class.getName() + " loaded");
 		}
 	}
 
-	public OpenNTFRenderKit() {
+	public OAuthRenderKit() {
 		super();
 		if (_debug) {
 			System.out.println(getClass().getName() + " created");
