@@ -2,19 +2,23 @@ package org.openntf.xsp.oauth.model;
 
 import java.io.Serializable;
 
-public abstract class AbstractOAuthPermission implements Serializable {
+public class OAuthPermission implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id;
+	private String displayName;
 	private String description;
 
 	@Override
 	public boolean equals(final Object other) {
-		return null != other
-				&& (other == this || other instanceof AbstractOAuthPermission && toString().equalsIgnoreCase(other.toString()));
+		return null != other && (other == this || other instanceof OAuthPermission && toString().equalsIgnoreCase(other.toString()));
 	}
 
 	public String getDescription() {
 		return description;
+	}
+
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	public String getId() {
@@ -28,6 +32,10 @@ public abstract class AbstractOAuthPermission implements Serializable {
 
 	public void setDescription(final String description) {
 		this.description = description;
+	}
+
+	public void setDisplayName(final String displayName) {
+		this.displayName = displayName;
 	}
 
 	public void setId(final String id) {

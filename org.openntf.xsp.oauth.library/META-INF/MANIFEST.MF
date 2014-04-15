@@ -1,15 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OAuth XSP Library
-Bundle-SymbolicName: org.openntf.xsp.oauth.library;singleton:=true
+Bundle-SymbolicName: org.openntf.xsp.oauth;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.openntf.xsp.oauth.Activator
 Bundle-Vendor: OpenNTF
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .
 Import-Package: com.ibm.commons.util,
  com.ibm.commons.vfs,
  com.ibm.designer.runtime,
+ com.ibm.designer.runtime.directory,
  com.ibm.designer.runtime.domino.adapter,
  com.ibm.designer.runtime.domino.bootstrap.adapter,
  com.ibm.domino.napi.c,
@@ -33,20 +34,20 @@ Export-Package: org.openntf.xsp.oauth,
  org.openntf.xsp.oauth.beans,
  org.openntf.xsp.oauth.components,
  org.openntf.xsp.oauth.context,
+ org.openntf.xsp.oauth.controller,
  org.openntf.xsp.oauth.el,
  org.openntf.xsp.oauth.implicit,
  org.openntf.xsp.oauth.library,
- org.openntf.xsp.oauth.lifecycle,
  org.openntf.xsp.oauth.listeners,
  org.openntf.xsp.oauth.model,
- org.openntf.xsp.oauth.renderkit,
  org.openntf.xsp.oauth.resolver,
  org.openntf.xsp.oauth.resources,
+ org.openntf.xsp.oauth.service,
  org.openntf.xsp.oauth.servlet,
  org.openntf.xsp.oauth.ssjs,
  org.openntf.xsp.oauth.util
-Require-Bundle: com.ibm.xsp.domino,
- com.ibm.xsp.extsn,
- com.ibm.designer.runtime,
+Require-Bundle: com.ibm.xsp.core,
  com.ibm.xsp.designer,
- com.ibm.xsp.extlib
+ com.ibm.xsp.extsn,
+ com.ibm.xsp.domino,
+ com.ibm.xsp.extlib;visibility:=reexport

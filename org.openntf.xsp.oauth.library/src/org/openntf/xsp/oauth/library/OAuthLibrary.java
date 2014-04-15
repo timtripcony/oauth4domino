@@ -17,7 +17,7 @@ import org.openntf.xsp.oauth.Activator;
 import com.ibm.xsp.library.AbstractXspLibrary;
 
 public class OAuthLibrary extends AbstractXspLibrary {
-	private final static String LIBRARY_ID = "org.openntf.xsp.oauth.library"; // OAuthLibrary.class.getName();
+	private final static String LIBRARY_ID = OAuthLibrary.class.getPackage().getName();
 	public final static String LIBRARY_RESOURCE_NAMESPACE = "oauth";
 	public final static String LIBRARY_BEAN_PREFIX = "OAuth";
 	private final static boolean _debug = Activator._debug;
@@ -54,7 +54,7 @@ public class OAuthLibrary extends AbstractXspLibrary {
 
 	@Override
 	public String getPluginId() {
-		return Activator.PLUGIN_ID;
+		return Activator.getPluginId();
 	}
 
 	@Override

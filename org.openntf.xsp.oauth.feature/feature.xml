@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.openntf.xsp.oauth.feature"
-      label="OAuth for Domino"
+      label="OAuth Provider for Domino"
       version="1.0.0.qualifier"
       provider-name="OpenNTF">
 
@@ -362,7 +362,7 @@
    </license>
 
    <plugin
-         id="org.openntf.xsp.oauth.library"
+         id="org.openntf.xsp.oauth"
          download-size="0"
          install-size="0"
          version="0.0.0"

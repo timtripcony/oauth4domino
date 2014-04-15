@@ -4,16 +4,25 @@ import java.io.Serializable;
 
 public class OAuthResourceContainer implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String databaseName;
+	private String id;
+	private String displayName;
 
 	public OAuthResourceContainer() {
 	}
 
-	public String getDatabaseName() {
-		return databaseName;
+	public String getDisplayName() {
+		return displayName;
 	}
 
-	public void setDatabaseName(final String databaseName) {
-		this.databaseName = databaseName;
+	public String getId() {
+		return id;
+	}
+
+	public void setDisplayName(final String displayName) {
+		this.displayName = displayName;
+	}
+
+	public void setId(final String id) {
+		this.id = id;
 	}
 }

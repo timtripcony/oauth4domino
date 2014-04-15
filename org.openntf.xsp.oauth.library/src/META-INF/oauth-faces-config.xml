@@ -25,7 +25,6 @@
 	</application>
 	<factory>
 		<application-factory>org.openntf.xsp.oauth.application.OAuthApplicationFactory</application-factory>
-		<lifecycle-factory>org.openntf.xsp.oauth.lifecycle.LifecycleFactory</lifecycle-factory>
 		<faces-context-factory>org.openntf.xsp.oauth.context.OAuthFacesContextFactory</faces-context-factory>
 	</factory>
 	<lifecycle id="PhaseListener">
@@ -51,13 +50,14 @@
 		<managed-bean-class>org.openntf.xsp.oauth.beans.RequestBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
-	<render-kit>
-		<render-kit-id>OAuthRenderKit</render-kit-id>
-		<render-kit-class>org.openntf.xsp.oauth.renderkit.OAuthRenderKit</render-kit-class>
-		<renderer id="OpenNTFRenderer">
-			<component-family>org.openntf.xsp.oauth</component-family>
-			<renderer-type>org.openntf.xsp.oauth.renderkit.OpenNTFRenderer</renderer-type>
-			<renderer-class>org.openntf.xsp.oauth.renderkit.OpenNTFRenderer</renderer-class>
-		</renderer>
-	</render-kit>
+	<managed-bean id="OAuthProvider">
+		<managed-bean-name>OAuthProvider</managed-bean-name>
+		<managed-bean-class>org.openntf.xsp.oauth.controller.OAuthProvider</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean id="OAuthTemporaryCode">
+		<managed-bean-name>OAuthTemporaryCode</managed-bean-name>
+		<managed-bean-class>org.openntf.xsp.oauth.model.OAuthTemporaryCode</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 </faces-config>

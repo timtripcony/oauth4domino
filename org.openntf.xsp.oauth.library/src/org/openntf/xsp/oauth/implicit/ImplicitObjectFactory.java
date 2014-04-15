@@ -22,11 +22,9 @@ import com.ibm.xsp.util.TypedUtil;
 
 public class ImplicitObjectFactory implements com.ibm.xsp.el.ImplicitObjectFactory {
 	private final String[][] implicitObjectList = {
-			{
-					"OAuthServerBean", ImplicitObject.class.getName()
-			}, {
-					"sessionFromAccessToken", SudoSession.class.getName()
-			}
+		{
+				"sessionFromAccessToken", SudoSession.class.getName()
+		}
 	};
 	private final static boolean _debug = Activator._debug;
 
@@ -41,8 +39,9 @@ public class ImplicitObjectFactory implements com.ibm.xsp.el.ImplicitObjectFacto
 	})
 	public void createImplicitObjects(final FacesContextEx context) {
 		final Map localMap = TypedUtil.getRequestMap(context.getExternalContext());
-		localMap.put("OAuthServerBean", new ImplicitObject());
-		localMap.put("sessionFromAccessToken", new SudoSession(context));
+		if (!localMap.containsKey("sessionFromAccessToken")) {
+			localMap.put("sessionFromAccessToken", new SudoSession(context));
+		}
 	}
 
 	public void destroyImplicitObjects(final FacesContext context) {
