@@ -17,13 +17,32 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends Plugin {
-	public static final String PLUGIN_ID = Activator.class.getPackage().getName();
+	public static String PLUGIN_ID;
 	public static final boolean _debug = true;
 	public static Activator instance;
 	private static String version;
 
+	public static void debug(final String message) {
+		if (_debug) {
+			final Throwable rug = new Throwable();
+			final StackTraceElement[] history = rug.getStackTrace();
+			final StackTraceElement lastOp = history[1];
+			final String className = lastOp.getClassName();
+			final String op = lastOp.getMethodName();
+			final int line = lastOp.getLineNumber();
+			System.out.println(className + "." + op + "[" + line + "] " + message);
+		}
+	}
+
 	public static Activator getDefault() {
 		return instance;
+	}
+
+	public static String getPluginId() {
+		if (PLUGIN_ID == null) {
+			PLUGIN_ID = (String) instance.getBundle().getHeaders().get("Bundle-SymbolicName");
+		}
+		return PLUGIN_ID;
 	}
 
 	public static String getVersion() {

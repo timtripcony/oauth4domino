@@ -15,6 +15,7 @@ package org.openntf.xsp.oauth.implicit;
 
 import java.util.Map;
 import javax.faces.context.FacesContext;
+import lotus.domino.NotesException;
 import org.openntf.xsp.oauth.Activator;
 import com.ibm.xsp.context.FacesContextEx;
 import com.ibm.xsp.util.TypedUtil;
@@ -22,7 +23,7 @@ import com.ibm.xsp.util.TypedUtil;
 public class ImplicitObjectFactory implements com.ibm.xsp.el.ImplicitObjectFactory {
 	private final String[][] implicitObjectList = {
 		{
-				"OAuthServerBean", ImplicitObject.class.getName()
+				"sessionFromAccessToken", SudoSession.class.getName()
 		}
 	};
 	private final static boolean _debug = Activator._debug;
@@ -36,16 +37,31 @@ public class ImplicitObjectFactory implements com.ibm.xsp.el.ImplicitObjectFacto
 	@SuppressWarnings({
 			"rawtypes", "unchecked"
 	})
-	public void createImplicitObjects(final FacesContextEx paramFacesContextEx) {
-		final Map localMap = TypedUtil.getRequestMap(paramFacesContextEx.getExternalContext());
-		localMap.put("OAuthServerBean", new ImplicitObject());
+	public void createImplicitObjects(final FacesContextEx context) {
+		final Map localMap = TypedUtil.getRequestMap(context.getExternalContext());
+		if (!localMap.containsKey("sessionFromAccessToken")) {
+			localMap.put("sessionFromAccessToken", new SudoSession(context));
+		}
 	}
 
-	public void destroyImplicitObjects(final FacesContext paramFacesContext) {
-		// TODO Auto-generated method stub
+	public void destroyImplicitObjects(final FacesContext context) {
+		if (_debug) {
+			System.out.println(getClass().getName() + " destroying implicit objects");
+		}
+		final Map localMap = TypedUtil.getRequestMap(context.getExternalContext());
+		if (localMap != null) {
+			final SudoSession sudoSession = (SudoSession) localMap.get("sessionFromAccessToken");
+			if (sudoSession != null) {
+				try {
+					sudoSession.recycle();
+				} catch (final NotesException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
-	public Object getDynamicImplicitObject(final FacesContextEx paramFacesContextEx, final String paramString) {
+	public Object getDynamicImplicitObject(final FacesContextEx context, final String variable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
