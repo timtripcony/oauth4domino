@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:bootstrap="http://getbootstrap.com" xmlns:xc="http://www.ibm.com/xsp/custom">
+	<bootstrap:layout>
+		<xp:this.facets>
+			<xp:panel xp:key="sidebar">
+				<ul class="nav nav-sidebar">
+					<li class="active">
+						<xp:link value="/" text="Resource Containers" />
+					</li>
+					<li>
+						<xp:link value="/Clients.xsp" text="Client Applications" />
+					</li>
+				</ul>
+			</xp:panel>
+			<xp:panel xp:key="content">
+				<xp:this.data>
+					<xp:dominoDocument var="container" formName="container" />
+				</xp:this.data>
+				<xc:helpHeader_container />
+				<xp:form styleClass="form-horizontal" id="formContainer">
+					<fieldset>
+						<legend>Basic Information</legend>
+						<div class="form-group">
+							<xp:label styleClass="col-sm-2 control-label" for="displayName" value="Container Name" />
+							<div class="col-sm-4">
+								<xp:inputText id="displayName" value="#{container.displayName}" styleClass="form-control input-lg" />
+							</div>
+							<xp:label styleClass="col-sm-2 control-label" for="id" value="System ID" />
+							<div class="col-sm-4">
+								<xp:inputText id="id" value="#{container.id}" styleClass="form-control input-lg" defaultValue="${javascript:return @Unique();}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<xp:label styleClass="col-sm-2 control-label" for="description" value="Description" />
+							<div class="col-sm-10">
+								<xp:inputTextarea id="description" value="#{container.description}" styleClass="form-control input-lg" />
+							</div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Security</legend>
+					</fieldset>
+					<div class="form-group">
+						<xp:label styleClass="col-sm-2 control-label" value="Permissions" />
+						<div class="col-sm-10">
+							<xp:panel>
+								<xp:this.data>
+									<xp:dominoView var="permissions" viewName="resourcePermissions" keys="#{container.id}" />
+								</xp:this.data>
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th class="col-sm-3">Alias</th>
+											<th class="col-sm-3">Display Name</th>
+											<th class="col-sm-6">Description</th>
+										</tr>
+									</thead>
+									<tbody>
+										<xp:repeat var="permission" value="#{permissions}">
+											<xp:panel>
+												<xp:this.dataContexts>
+													<xp:dataContext var="href" value="/Permission.xsp?action=editDocument&amp;documentId=#{permission.id}" />
+												</xp:this.dataContexts>
+												<tr>
+													<td>
+														<xp:text value="#{javascript:return permission.getColumnValue('id');}" />
+													</td>
+													<td>
+														<xp:text value="#{permission.displayName}" />
+													</td>
+													<td>
+														<xp:text value="#{permission.description}" />
+													</td>
+												</tr>
+											</xp:panel>
+										</xp:repeat>
+									</tbody>
+								</table>
+							</xp:panel>
+							<xp:link styleClass="btn btn-default" text="Add Permission" value="/Permission.xsp?containerId=#{container.id}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<xp:label styleClass="col-sm-2 control-label" value="Registered Clients" />
+						<div class="col-sm-10">
+							<xp:panel>
+								<xp:this.data>
+									<xp:dominoView var="clients" viewName="resourceClients" keys="#{container.id}" />
+								</xp:this.data>
+								<table class="table table-striped">
+									<thead>
+									</thead>
+									<tbody>
+										<xp:repeat var="client" value="#{clients}">
+											<xp:panel>
+												<xp:this.dataContexts>
+													<xp:dataContext var="href" value="/Client.xsp?action=editDocument&amp;documentId=#{client.id}" />
+												</xp:this.dataContexts>
+												<tr>
+													<td>
+														<xp:link value="#{href}" text="#{client.displayName}" />
+													</td>
+													<td>
+														<xp:text value="#{client.description}" />
+													</td>
+												</tr>
+											</xp:panel>
+										</xp:repeat>
+									</tbody>
+								</table>
+								<xp:link styleClass="btn btn-default" text="Add Client" value="/Client.xsp?containerId=#{container.id}" />
+							</xp:panel>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<xp:button id="buttonSave" type="submit" styleClass="btn btn-success" value="Save">
+								<xp:eventHandler id="onClickSaveButton" event="onclick" submit="true" refreshMode="partial" refreshId="formContainer"
+									execMode="partial" execId="formContainer">
+									<xp:this.action>
+										<xp:saveDocument var="container" />
+									</xp:this.action>
+								</xp:eventHandler>
+							</xp:button>
+						</div>
+					</div>
+				</xp:form>
+			</xp:panel>
+		</xp:this.facets>
+	</bootstrap:layout>
+</xp:view>

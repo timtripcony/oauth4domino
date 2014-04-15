@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" styleClass="jumbotron">
+	<p>An OAuth resource container is any set of protected resources that are conceptually, functionally, or organizationally related. In
+		Domino, we would think of this as a single "app", even if its data storage consists of multiple "databases".</p>
+</xp:view>

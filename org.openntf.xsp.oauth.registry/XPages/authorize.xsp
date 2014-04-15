@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:bootstrap="http://getbootstrap.com">
+	<xp:this.beforeRenderResponse>
+		<xp:executeScript script="#{javascript:OAuthProvider.validateRequest();}" />
+	</xp:this.beforeRenderResponse>
+	<bootstrap:layout>
+		<xp:this.facets>
+			<xp:panel xp:key="sidebar">
+				<ul class="nav nav-sidebar">
+					<li class="active">
+						<xp:link value="/" text="Resource Containers" />
+					</li>
+					<li>
+						<xp:link value="/Clients.xsp" text="Client Applications" />
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li>
+						<a href="#">Analytics</a>
+					</li>
+					<li>
+						<a href="#">Logs</a>
+					</li>
+				</ul>
+			</xp:panel>
+			<xp:panel xp:key="content">
+				<div class="alert alert-info">
+					<p class="lead text-center">
+						<xp:text
+							value="#{OAuthTemporaryCode.client.displayName} is requesting permission to access #{OAuthTemporaryCode.resourceContainer.displayName} on your behalf." />
+					</p>
+				</div>
+				<ul class="list-group">
+					<xp:repeat var="permission" value="#{OAuthTemporaryCode.requestedPermissions}">
+						<li class="list-group-item">
+							<h4>
+								<xp:text value="#{permission.displayName}" />
+							</h4>
+							<p>
+								<xp:text value="#{permission.description}" />
+							</p>
+						</li>
+					</xp:repeat>
+				</ul>
+				<xp:button id="buttonAuthorize" styleClass="btn btn-success" value="Authorize">
+					<xp:eventHandler event="onclick" action="#{OAuthProvider.authorize}" />
+				</xp:button>
+				<xp:button id="buttonDenyAccess" styleClass="btn btn-warning" value="Cancel">
+					<xp:eventHandler event="onclick" action="#{OAuthProvider.denyAccess}" />
+				</xp:button>
+			</xp:panel>
+		</xp:this.facets>
+	</bootstrap:layout>
+</xp:view>

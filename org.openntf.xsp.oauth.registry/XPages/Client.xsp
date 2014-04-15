@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:bootstrap="http://getbootstrap.com" xmlns:xc="http://www.ibm.com/xsp/custom">
+	<bootstrap:layout>
+		<xp:this.facets>
+			<xp:panel xp:key="sidebar">
+				<ul class="nav nav-sidebar">
+					<li>
+						<xp:link value="/" text="Resource Containers" />
+					</li>
+					<li class="active">
+						<xp:link value="/Clients.xsp" text="Client Applications" />
+					</li>
+				</ul>
+			</xp:panel>
+			<xp:panel xp:key="content">
+				<xp:this.data>
+					<xp:dominoDocument var="client" formName="client" computeWithForm="onsave" />
+				</xp:this.data>
+				<xc:helpHeader_client />
+				<xp:form styleClass="form-horizontal" id="formClient">
+					<fieldset>
+						<legend>Basic Information</legend>
+						<div class="form-group">
+							<xp:label styleClass="col-sm-2 control-label" for="id" value="Client ID" />
+							<div class="col-sm-4">
+								<xp:inputText id="id" value="#{client.id}" styleClass="form-control input-lg" defaultValue="${javascript:return @Unique();}" />
+							</div>
+							<xp:label styleClass="col-sm-2 control-label" for="clientSecret" value="Client Secret" />
+							<div class="col-sm-4">
+								<xp:inputText id="clientSecret" value="#{client.clientSecret}" styleClass="form-control input-lg" defaultValue="${javascript:return @Unique();}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<xp:label styleClass="col-sm-2 control-label" for="displayName" value="Display Name" />
+							<div class="col-sm-4">
+								<xp:inputText id="displayName" value="#{client.displayName}" styleClass="form-control input-lg" />
+							</div>
+							<xp:label styleClass="col-sm-2 control-label" for="containerId" value="Resource Container" />
+							<div class="col-sm-4">
+								<xp:comboBox id="containerId" value="#{client.containerId}" styleClass="form-control input-lg" defaultValue="${param.containerId}">
+									<xp:selectItems>
+										<xp:this.value><![CDATA[#{ClientController.resourceContainerOptions}]]></xp:this.value>
+									</xp:selectItems>
+								</xp:comboBox>
+							</div>
+						</div>
+						<div class="form-group">
+							<xp:label styleClass="col-sm-2 control-label" for="description" value="Description" />
+							<div class="col-sm-10">
+								<xp:inputText id="description" value="#{client.description}" styleClass="form-control input-lg" />
+							</div>
+						</div>
+					</fieldset>
+					<fieldset>
+						<legend>Security</legend>
+					</fieldset>
+					<div class="form-group">
+						<xp:label for="redirectionURI" value="Valid Redirection URIs" styleClass="col-sm-2 control-label" />
+						<div class="col-sm-10">
+							<xp:inputText id="redirectionURI" value="#{client.redirectionURI}" styleClass="form-control" multipleSeparator="," />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<xp:button id="buttonSave" type="submit" styleClass="btn btn-success" value="Save">
+								<xp:eventHandler id="onClickButtonSave" event="onclick" submit="true" refreshMode="partial" refreshId="formClient"
+									execMode="partial" execId="formClient">
+									<xp:this.action>
+										<xp:saveDocument var="client" />
+									</xp:this.action>
+								</xp:eventHandler>
+							</xp:button>
+						</div>
+					</div>
+				</xp:form>
+			</xp:panel>
+		</xp:this.facets>
+	</bootstrap:layout>
+</xp:view>

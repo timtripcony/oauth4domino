@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" styleClass="jumbotron">
+	<p>An OAuth client is any entity connecting to a protected resource on behalf of a specific end user. While our traditional definition
+		of an "app" describes what, in the context of OAuth, would be considered a Resource Container, an OAuth client is what a typical end user
+		would call an "app", such as a native mobile app connecting to a Domino server on the user's behalf.</p>
+</xp:view>

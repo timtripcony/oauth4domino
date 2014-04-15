@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:bootstrap="http://getbootstrap.com" xmlns:xc="http://www.ibm.com/xsp/custom">
+	<bootstrap:layout>
+		<xp:this.facets>
+			<xp:panel xp:key="sidebar">
+				<ul class="nav nav-sidebar">
+					<li>
+						<xp:link value="/" text="Resource Containers" />
+					</li>
+					<li class="active">
+						<xp:link value="/Clients.xsp" text="Client Applications" />
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li>
+						<a href="#">Analytics</a>
+					</li>
+					<li>
+						<a href="#">Logs</a>
+					</li>
+				</ul>
+			</xp:panel>
+			<xp:panel xp:key="content">
+				<xp:this.data>
+					<xp:dominoView var="clients" viewName="clients" />
+				</xp:this.data>
+				<xc:helpHeader_client />
+				<div class="pull-right">
+					<xp:link styleClass="btn btn-primary" text="New Client" value="/Client.xsp" />
+				</div>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="col-sm-3">Client</th>
+								<th class="col-sm-9">Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<xp:repeat var="client" value="#{clients}">
+								<xp:panel>
+									<xp:this.dataContexts>
+										<xp:dataContext var="href" value="/Client.xsp?action=editDocument&amp;documentId=#{client.id}" />
+									</xp:this.dataContexts>
+									<tr>
+										<td>
+											<xp:link value="#{href}" text="#{client.displayName}" />
+										</td>
+										<td>
+											<xp:text value="#{client.description}" />
+										</td>
+									</tr>
+								</xp:panel>
+							</xp:repeat>
+						</tbody>
+					</table>
+				</div>
+			</xp:panel>
+		</xp:this.facets>
+	</bootstrap:layout>
+</xp:view>

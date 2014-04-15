@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:bootstrap="http://getbootstrap.com" xmlns:xc="http://www.ibm.com/xsp/custom">
+	<bootstrap:layout>
+		<xp:this.facets>
+			<xp:panel xp:key="sidebar">
+				<ul class="nav nav-sidebar">
+					<li class="active">
+						<xp:link value="/" text="Resource Containers" />
+					</li>
+					<li>
+						<xp:link value="/Clients.xsp" text="Client Applications" />
+					</li>
+				</ul>
+				<ul class="nav nav-sidebar">
+					<li>
+						<a href="#">Analytics</a>
+					</li>
+					<li>
+						<a href="#">Logs</a>
+					</li>
+				</ul>
+			</xp:panel>
+			<xp:panel xp:key="content">
+				<xp:this.data>
+					<xp:dominoView var="containers" viewName="containers" />
+				</xp:this.data>
+				<xc:helpHeader_container />
+				<div class="pull-right">
+					<xp:link styleClass="btn btn-primary" text="New Container" value="/Container.xsp" />
+				</div>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="col-sm-3">Container</th>
+								<th class="col-sm-9">Description</th>
+							</tr>
+						</thead>
+						<tbody>
+							<xp:repeat var="container" value="#{containers}">
+								<xp:panel>
+									<xp:this.dataContexts>
+										<xp:dataContext var="href" value="/Container.xsp?action=editDocument&amp;documentId=#{container.id}" />
+									</xp:this.dataContexts>
+									<tr>
+										<td>
+											<xp:link value="#{href}" text="#{container.displayName}" />
+										</td>
+										<td>
+											<xp:text value="#{container.description}" />
+										</td>
+									</tr>
+								</xp:panel>
+							</xp:repeat>
+						</tbody>
+					</table>
+				</div>
+			</xp:panel>
+		</xp:this.facets>
+	</bootstrap:layout>
+</xp:view>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xe:restService id="token" jsId="token" pathInfo="token">
+		<xe:this.service>
+			<xe:customRestService serviceBean="org.openntf.xsp.oauth.service.OAuthTokenRequestService" />
+		</xe:this.service>
+	</xe:restService>
+	<xe:restService id="tokenTest" jsId="tokenTest" pathInfo="tokenTest">
+		<xe:this.service>
+			<xe:customRestService serviceBean="org.acme.xsp.oauth.model.OAuthTokenTest" />
+		</xe:this.service>
+	</xe:restService>
+	<xe:restService id="me" jsId="me" pathInfo="me">
+		<xe:this.service>
+			<xe:customRestService contentType="application/json">
+				<xe:this.doGet><![CDATA[#{javascript:var myName = sessionFromAccessToken.getUserName();
+var commonName = sessionFromAccessToken.getCommonUserName();
+var abbreviatedName = sessionFromAccessToken.getUserNameObject().getAbbreviated();
+
+var currentDatabase = sessionFromAccessToken.getCurrentDatabase();
+
+var nameVector:java.util.Vector = sessionFromAccessToken.getUserGroupNameList();
+var nameList = [];
+for (var i = 0; i < nameVector.size(); i++) {
+	nameList.push(nameVector.get(i).toString());
+}
+
+return {
+	name: {
+		abbreviated: abbreviatedName,
+		common: commonName,
+		distinguishedName: myName,
+		knownAliases: nameList
+	},
+	currentApplication: {
+		accessLevel: currentDatabase.queryAccess(myName),
+		filePath: currentDatabase.getFilePath(),
+		title: currentDatabase.getTitle()
+	}
+};}]]></xe:this.doGet>
+			</xe:customRestService>
+		</xe:this.service>
+	</xe:restService>
+</xp:view>

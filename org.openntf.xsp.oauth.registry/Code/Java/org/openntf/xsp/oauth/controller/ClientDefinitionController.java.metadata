@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="85257CA30000E734" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="1de" sequence="22" unid="B022D9EB687C8DFA85257CB9006E86A3">
+<created><datetime dst="true">20140413T160714,27-04</datetime></created>
+<modified><datetime dst="true">20140414T204919,11-04</datetime></modified>
+<revised><datetime dst="true">20140414T204919,10-04</datetime></revised>
+<lastaccessed><datetime dst="true">20140414T204919,11-04</datetime></lastaccessed>
+<addedtofile><datetime dst="true">20140413T160714,28-04</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Tim Tripcony/O=Best</name></updatedby>
+<wassignedby><name>CN=Tim Tripcony/O=Best</name></wassignedby>
+<item name="$Flags"><text>34567Cg~[</text></item>
+<item name="$TITLE"><text>org/openntf/xsp/oauth/controller/ClientDefinitionController.java</text></item>
+
+
+
+<item name="$DesignerVersion"><text>8.5.3</text></item>
+
+
+<item name="$FileNames" sign="true"><text>org/openntf/xsp/oauth/controller/ClientDefinitionController.java</text></item>
+
+</note>
