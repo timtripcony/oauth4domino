@@ -35,9 +35,9 @@ if no custom permissions are defined, each end user will be asked to grant the d
 ### Configure Authorization Container
 This is the NSF that the user will be redirected to when a client application requests their permission for access to a resource container.
 
-Add the `// TODO` Custom Control to an XPage of your choosing. This can be as global as a single XPage for your entire domain &mdash;
-or as varied as a separate XPage for each resource container &mdash; and should contain any branding deemed appropriate to ensuring
-users that they are in the right place and presented with a clean, modern interface.
+Copy the `permissionPrompt` Custom Control from the registry template and add it to any XPage of your choosing. This can be as global as a
+single XPage for your entire domain &mdash; or as varied as a separate XPage for each resource container &mdash; and should contain any
+branding deemed appropriate to ensuring users that they are in the right place and presented with a clean, modern interface.
 
 Only one characteristic of this portion of the configuration is non-negotiable: anonymous users may not access this page directly.
 By the time the user sees the `Authorize` and `Cancel` buttons, they **must** have already been authenticated by Domino.
@@ -68,6 +68,7 @@ or by manually adding the library name on the Source tab; e.g.:
 
 
 ### Reference the API
+#### In Java:
     OAuthSession session = OAuthProvider.getSession();
     if (!session.isAnonymous()) {
       // session is now the resource owner
@@ -76,6 +77,25 @@ or by manually adding the library name on the Source tab; e.g.:
          * the end user granted permission to the client app
          * to send email on their behalf, so it's safe to use
          * the session variable to do so
+         */
+      } else {
+        /* the client app has not been granted permission to
+         * send email on the user's behalf, so if we do still
+         * need to send email, we should use sessionAsSigner
+         * to ensure we're respecting the user's wishes
+         */
+      }
+    } else {
+      // do nothing unless anonymous access is allowed
+    }
+#### In SSJS:
+    if (!sessionFromAccessToken.isAnonymous()) {
+      // session is now the resource owner
+      if (sessionFromAccessToken.isGrantedPermission("send_email")) {
+        /*
+         * the end user granted permission to the client app
+         * to send email on their behalf, so it's safe to use
+         * the sessionFromAccessToken variable to do so
          */
       } else {
         /* the client app has not been granted permission to
