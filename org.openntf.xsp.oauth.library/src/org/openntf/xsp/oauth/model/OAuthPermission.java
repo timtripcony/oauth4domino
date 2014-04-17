@@ -4,6 +4,15 @@ import java.io.Serializable;
 
 public class OAuthPermission implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	public static OAuthPermission basicProfileAccess() {
+		final OAuthPermission result = new OAuthPermission();
+		result.setId("basic_profile");
+		result.setDisplayName("Basic Profile Information");
+		result.setDescription("This application will have access to your name and other basic information about your account.");
+		return result;
+	}
+
 	private String id;
 	private String displayName;
 	private String description;

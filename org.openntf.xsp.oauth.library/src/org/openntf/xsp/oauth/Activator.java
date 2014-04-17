@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 
 public class Activator extends Plugin {
 	public static String PLUGIN_ID;
-	public static final boolean _debug = true;
+	public static final boolean _debug = false;
 	public static Activator instance;
 	private static String version;
 

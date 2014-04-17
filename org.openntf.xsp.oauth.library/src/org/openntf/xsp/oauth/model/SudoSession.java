@@ -11,13 +11,11 @@
  * implied. See the License for the specific language governing 
  * permissions and limitations under the License.
  */
-package org.openntf.xsp.oauth.implicit;
+package org.openntf.xsp.oauth.model;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
-import javax.faces.FacesException;
-import javax.servlet.http.HttpServletResponse;
 import lotus.domino.AdministrationProcess;
 import lotus.domino.AgentContext;
 import lotus.domino.Base;
@@ -43,58 +41,13 @@ import lotus.domino.RichTextParagraphStyle;
 import lotus.domino.RichTextStyle;
 import lotus.domino.Session;
 import lotus.domino.Stream;
-import lotus.domino.View;
-import lotus.domino.ViewEntry;
-import org.openntf.xsp.oauth.Activator;
-import org.openntf.xsp.oauth.controller.OAuthProvider;
-import org.openntf.xsp.oauth.model.OAuthAccessToken;
-import org.openntf.xsp.oauth.util.OAuthDominoUtils;
-import org.openntf.xsp.oauth.util.SudoUtils;
-import org.openntf.xsp.oauth.util.XspUtils;
-import com.ibm.commons.util.StringUtil;
-import com.ibm.xsp.context.FacesContextEx;
 import com.ibm.xsp.extlib.util.ExtLibUtil;
 
 public class SudoSession implements Session {
 	private Session delegate;
-	private OAuthAccessToken authorization;
 
-	private SudoSession() {
-		// to prevent construction from outside
-	}
-
-	public SudoSession(final FacesContextEx context) {
-		String userName = "Anonymous";
-		final String accessToken = ExtLibUtil.readParameter(context, "accessToken");
-		Activator.debug("Access Token: " + accessToken);
-		final HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-		if (StringUtil.isNotEmpty(accessToken)) {
-			View tokenView = null;
-			ViewEntry tokenEntry = null;
-			Document tokenDocument = null;
-			try {
-				final OAuthProvider provider = new OAuthProvider();
-				tokenView = provider.getTokenStore().getView("tokens");
-				tokenEntry = tokenView.getEntryByKey(accessToken, true);
-				if (tokenEntry != null) {
-					tokenDocument = tokenEntry.getDocument();
-					final String resourceOwner = tokenDocument.getItemValueString("resourceOwner");
-					if (StringUtil.isNotEmpty(resourceOwner)) {
-						userName = resourceOwner;
-						setAuthorization(OAuthAccessToken.valueOf(accessToken));
-					}
-				} else {
-					response.setStatus(401);
-				}
-			} catch (final NotesException e) {
-				throw new FacesException(e);
-			} finally {
-				OAuthDominoUtils.incinerate(tokenDocument, tokenEntry, tokenView);
-			}
-			// TODO: log authentication if enabled in xsp.properties
-		}
-		Activator.debug("User name: " + userName);
-		setDelegate(SudoUtils.getSessionAs(userName));
+	protected SudoSession() {
+		// to discourage construction from outside
 	}
 
 	public SudoSession(final Session session) {
@@ -204,10 +157,6 @@ public class SudoSession implements Session {
 		return getDelegate().getAgentContext();
 	}
 
-	public OAuthAccessToken getAuthorization() {
-		return authorization;
-	}
-
 	public NotesCalendar getCalendar(final Database database) throws NotesException {
 		return getDelegate().getCalendar(database);
 	}
@@ -303,10 +252,6 @@ public class SudoSession implements Session {
 
 	public String getSessionToken(final String hostName) throws NotesException {
 		return getDelegate().getSessionToken(hostName);
-	}
-
-	public String getTokenStorePath() {
-		return XspUtils.getXspApplicationProperty("xsp.oauth.tokenstore", "oauth.nsf");
 	}
 
 	public String getURL() throws NotesException {
@@ -405,10 +350,6 @@ public class SudoSession implements Session {
 
 	public void setAllowLoopBack(final boolean option) throws NotesException {
 		getDelegate().setAllowLoopBack(option);
-	}
-
-	protected void setAuthorization(final OAuthAccessToken authorization) {
-		this.authorization = authorization;
 	}
 
 	public void setConvertMime(final boolean option) throws NotesException {

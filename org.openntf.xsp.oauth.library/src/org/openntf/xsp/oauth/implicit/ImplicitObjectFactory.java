@@ -17,13 +17,14 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 import lotus.domino.NotesException;
 import org.openntf.xsp.oauth.Activator;
+import org.openntf.xsp.oauth.model.OAuthSession;
 import com.ibm.xsp.context.FacesContextEx;
 import com.ibm.xsp.util.TypedUtil;
 
 public class ImplicitObjectFactory implements com.ibm.xsp.el.ImplicitObjectFactory {
 	private final String[][] implicitObjectList = {
 		{
-				"sessionFromAccessToken", SudoSession.class.getName()
+				"sessionFromAccessToken", OAuthSession.class.getName()
 		}
 	};
 	private final static boolean _debug = Activator._debug;
@@ -40,7 +41,7 @@ public class ImplicitObjectFactory implements com.ibm.xsp.el.ImplicitObjectFacto
 	public void createImplicitObjects(final FacesContextEx context) {
 		final Map localMap = TypedUtil.getRequestMap(context.getExternalContext());
 		if (!localMap.containsKey("sessionFromAccessToken")) {
-			localMap.put("sessionFromAccessToken", new SudoSession(context));
+			localMap.put("sessionFromAccessToken", OAuthSession.fromFacesContext(context));
 		}
 	}
 
@@ -50,7 +51,7 @@ public class ImplicitObjectFactory implements com.ibm.xsp.el.ImplicitObjectFacto
 		}
 		final Map localMap = TypedUtil.getRequestMap(context.getExternalContext());
 		if (localMap != null) {
-			final SudoSession sudoSession = (SudoSession) localMap.get("sessionFromAccessToken");
+			final OAuthSession sudoSession = (OAuthSession) localMap.get("sessionFromAccessToken");
 			if (sudoSession != null) {
 				try {
 					sudoSession.recycle();

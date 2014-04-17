@@ -7,12 +7,11 @@ import javax.faces.context.FacesContext;
 import lotus.domino.Database;
 import lotus.domino.Document;
 import lotus.domino.Session;
-import org.openntf.xsp.oauth.implicit.SudoSession;
+import org.openntf.xsp.oauth.model.OAuthSession;
 import org.openntf.xsp.oauth.model.OAuthTemporaryCode;
 import org.openntf.xsp.oauth.util.OAuthDominoUtils;
 import org.openntf.xsp.oauth.util.XspUtils;
 import com.ibm.commons.util.StringUtil;
-import com.ibm.xsp.context.FacesContextEx;
 import com.ibm.xsp.extlib.util.ExtLibUtil;
 import com.ibm.xsp.model.domino.DominoUtils;
 
@@ -21,6 +20,10 @@ public class OAuthProvider implements Serializable {
 
 	public static OAuthProvider getCurrentInstance() {
 		return (OAuthProvider) ExtLibUtil.resolveVariable(FacesContext.getCurrentInstance(), "OAuthProvider");
+	}
+
+	public static OAuthSession getSession() {
+		return getCurrentInstance().getSessionFromAccessToken();
 	}
 
 	private String tokenStorePath;
@@ -102,8 +105,8 @@ public class OAuthProvider implements Serializable {
 		return registryPath;
 	}
 
-	public SudoSession getSessionFromAccessToken() {
-		return new SudoSession(FacesContextEx.getCurrentInstance());
+	public OAuthSession getSessionFromAccessToken() {
+		return OAuthSession.fromFacesContext(FacesContext.getCurrentInstance());
 	}
 
 	public Database getTokenStore() {

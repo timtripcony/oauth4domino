@@ -1,30 +1,107 @@
 package org.openntf.xsp.oauth.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
+import lotus.domino.Database;
 import lotus.domino.View;
 import lotus.domino.ViewEntry;
+import org.openntf.xsp.oauth.Activator;
 import org.openntf.xsp.oauth.controller.OAuthProvider;
-import org.openntf.xsp.oauth.util.OAuthDominoUtils;
+import org.openntf.xsp.oauth.util.RecycleBin;
+import com.ibm.commons.util.StringUtil;
 
 public class OAuthAccessToken implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private final static boolean _debug = Activator._debug;
 
 	public static OAuthAccessToken valueOf(final String token) {
 		final OAuthAccessToken result = new OAuthAccessToken();
 		result.setToken(token);
-		View tokens = null;
-		ViewEntry tokenEntry = null;
+		final OAuthProvider provider = new OAuthProvider();
+		final Database tokenStore = provider.getTokenStore();
+		final Database registry = provider.getRegistry();
+		final RecycleBin trash = new RecycleBin();
 		try {
-			tokens = result.getProvider().getTokenStore().getView("tokens");
-			tokenEntry = tokens.getEntryByKey(token);
-			if (tokenEntry != null) {
-				// TODO: populate token metadata so the session can query its client, resource container, permissions, etc.
-				// result.setClient(client);
+			final View tokens = tokenStore.getView("tokens");
+			if (tokens != null) {
+				trash.add(tokens);
+				final ViewEntry tokenEntry = tokens.getEntryByKey(token);
+				if (tokenEntry != null) {
+					trash.add(tokenEntry);
+					final Vector<?> tokenColumnValues = tokenEntry.getColumnValues();
+					trash.add(tokenColumnValues);
+					final String clientId = tokenColumnValues.get(1).toString();
+					final String userName = tokenColumnValues.get(3).toString();
+					final OAuthResourceOwner owner = new OAuthResourceOwner();
+					owner.setDistinguishedName(userName);
+					result.setResourceOwner(owner);
+					final View clients = registry.getView("clients");
+					if (clients != null) {
+						trash.add(clients);
+						final ViewEntry clientEntry = clients.getEntryByKey(clientId, true);
+						if (clientEntry != null) {
+							trash.add(clientEntry);
+							final Vector<?> clientColumnValues = clientEntry.getColumnValues();
+							final OAuthClient client = new OAuthClient();
+							client.setId(clientColumnValues.get(0).toString());
+							client.setDisplayName(clientColumnValues.get(1).toString());
+							client.setDescription(clientColumnValues.get(2).toString());
+							client.setContainerId(clientColumnValues.get(3).toString());
+							result.setClient(client);
+							final View containers = registry.getView("containers");
+							if (containers != null) {
+								trash.add(containers);
+								final ViewEntry containerEntry = containers.getEntryByKey(client.getContainerId(), true);
+								{
+									if (containerEntry != null) {
+										trash.add(containerEntry);
+										final Vector<?> containerColumnValues = containerEntry.getColumnValues();
+										trash.add(containerColumnValues);
+										final OAuthResourceContainer container = new OAuthResourceContainer();
+										container.setId(containerColumnValues.get(0).toString());
+										container.setDisplayName(containerColumnValues.get(1).toString());
+										client.setDescription(clientColumnValues.get(2).toString());
+										result.setResourceContainer(container);
+										final String scope = tokenColumnValues.get(2).toString();
+										final Set<OAuthPermission> permissions = new HashSet<OAuthPermission>();
+										final View permissionKeys = registry.getView("permissionKeys");
+										if (permissionKeys != null) {
+											trash.add(permissionKeys);
+											final String[] splitScope = scope.split(",");
+											for (final String permissionId : splitScope) {
+												if (StringUtil.isNotEmpty(permissionId)) {
+													final ViewEntry permissionEntry = permissionKeys.getEntryByKey(container.getId() + "~"
+															+ permissionId, true);
+													if (permissionEntry != null) {
+														trash.add(permissionEntry);
+														final Vector<?> permissionColumnValues = permissionEntry.getColumnValues();
+														trash.add(permissionColumnValues);
+														final OAuthPermission permission = new OAuthPermission();
+														permission.setId(permissionId);
+														permission.setDisplayName(permissionColumnValues.get(2).toString());
+														permission.setDescription(permissionColumnValues.get(3).toString());
+														permissions.add(permission);
+													}
+												}
+											}
+										}
+										permissions.add(OAuthPermission.basicProfileAccess());
+										result.setPermissions(permissions);
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		} catch (final Throwable t) {
+			if (_debug) {
+				t.printStackTrace();
+			}
 		} finally {
-			OAuthDominoUtils.incinerate(tokenEntry, tokens);
+			trash.empty();
 		}
 		return result;
 	}
@@ -40,8 +117,6 @@ public class OAuthAccessToken implements Serializable {
 	}
 
 	public OAuthClient getClient() {
-		if (client == null) {
-		}
 		return client;
 	}
 
@@ -61,9 +136,6 @@ public class OAuthAccessToken implements Serializable {
 	}
 
 	public OAuthResourceOwner getResourceOwner() {
-		if (resourceOwner == null) {
-			// TODO: check token store to see if valid
-		}
 		return resourceOwner;
 	}
 
@@ -76,7 +148,14 @@ public class OAuthAccessToken implements Serializable {
 	}
 
 	public boolean isPermitted(final String permissionId) {
-		return getPermissions().contains(permissionId);
+		boolean result = false;
+		for (final OAuthPermission permission : getPermissions()) {
+			if (permission.getId().equalsIgnoreCase(permissionId)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 
 	public boolean isValid() {
