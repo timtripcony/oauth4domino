@@ -93,7 +93,7 @@ public class OAuthTemporaryCode implements Serializable {
 			ViewEntry entry = null;
 			Vector<?> columnValues = null;
 			try {
-				permissionView = ExtLibUtil.getCurrentDatabase().getView("permissionKeys");
+				permissionView = OAuthProvider.getCurrentInstance().getRegistry().getView("permissionKeys");
 				for (final String alias : aliases) {
 					entry = permissionView.getEntryByKey(getContainerId() + "~" + alias, true);
 					if (entry != null) {
