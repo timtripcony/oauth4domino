@@ -64,7 +64,6 @@ public class OAuthSession extends SudoSession {
 		}
 		result = new OAuthSession(SudoUtils.getSessionAs(userName));
 		result.setAuthorization(authorization);
-		Activator.debug("User name: " + userName);
 		return result;
 	}
 

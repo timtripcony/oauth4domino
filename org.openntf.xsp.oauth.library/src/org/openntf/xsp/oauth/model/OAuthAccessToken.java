@@ -17,7 +17,6 @@ public class OAuthAccessToken implements Serializable {
 	private final static boolean _debug = Activator._debug;
 
 	public static OAuthAccessToken valueOf(final String token) {
-		Activator.debug("Factory creating token metadata object for token " + token);
 		final OAuthAccessToken result = new OAuthAccessToken();
 		result.setToken(token);
 		final OAuthProvider provider = new OAuthProvider();
@@ -34,9 +33,7 @@ public class OAuthAccessToken implements Serializable {
 					final Vector<?> tokenColumnValues = tokenEntry.getColumnValues();
 					trash.add(tokenColumnValues);
 					final String clientId = tokenColumnValues.get(1).toString();
-					Activator.debug("Client ID: " + clientId);
 					final String userName = tokenColumnValues.get(3).toString();
-					Activator.debug("Acting on behalf of " + userName);
 					final OAuthResourceOwner owner = new OAuthResourceOwner();
 					owner.setDistinguishedName(userName);
 					result.setResourceOwner(owner);
@@ -50,7 +47,6 @@ public class OAuthAccessToken implements Serializable {
 							final OAuthClient client = new OAuthClient();
 							client.setId(clientColumnValues.get(0).toString());
 							client.setDisplayName(clientColumnValues.get(1).toString());
-							Activator.debug("Client name: " + client.getDisplayName());
 							client.setDescription(clientColumnValues.get(2).toString());
 							client.setContainerId(clientColumnValues.get(3).toString());
 							result.setClient(client);
@@ -66,11 +62,9 @@ public class OAuthAccessToken implements Serializable {
 										final OAuthResourceContainer container = new OAuthResourceContainer();
 										container.setId(containerColumnValues.get(0).toString());
 										container.setDisplayName(containerColumnValues.get(1).toString());
-										Activator.debug("Accessing resource container " + container.getDisplayName());
 										client.setDescription(clientColumnValues.get(2).toString());
 										result.setResourceContainer(container);
 										final String scope = tokenColumnValues.get(2).toString();
-										Activator.debug("Token scope: " + scope);
 										final Set<OAuthPermission> permissions = new HashSet<OAuthPermission>();
 										final View permissionKeys = registry.getView("permissionKeys");
 										if (permissionKeys != null) {
@@ -89,9 +83,6 @@ public class OAuthAccessToken implements Serializable {
 														permission.setDisplayName(permissionColumnValues.get(2).toString());
 														permission.setDescription(permissionColumnValues.get(3).toString());
 														permissions.add(permission);
-													} else {
-														Activator.debug(String.format("Permission entry %s~%s not found",
-																container.getId(), permissionId));
 													}
 												}
 											}
