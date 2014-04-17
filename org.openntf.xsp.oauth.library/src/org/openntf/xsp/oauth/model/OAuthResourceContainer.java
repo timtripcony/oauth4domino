@@ -18,11 +18,11 @@ public class OAuthResourceContainer implements Serializable {
 		return id;
 	}
 
-	public void setDisplayName(final String displayName) {
+	protected void setDisplayName(final String displayName) {
 		this.displayName = displayName;
 	}
 
-	public void setId(final String id) {
+	protected void setId(final String id) {
 		this.id = id;
 	}
 }

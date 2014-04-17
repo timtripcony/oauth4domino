@@ -3,20 +3,17 @@ package org.openntf.xsp.oauth.service;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lotus.domino.Base;
 import lotus.domino.Document;
 import lotus.domino.NotesException;
 import lotus.domino.View;
 import lotus.domino.ViewEntry;
 import org.openntf.xsp.oauth.controller.OAuthProvider;
-import org.openntf.xsp.oauth.util.OAuthDominoUtils;
+import org.openntf.xsp.oauth.util.RecycleBin;
 import com.ibm.commons.util.io.json.JsonException;
 import com.ibm.commons.util.io.json.JsonGenerator;
 import com.ibm.commons.util.io.json.JsonJavaFactory;
@@ -63,29 +60,29 @@ public class OAuthTokenRequestService extends AbstractCustomServiceBean {
 		View clientView = null;
 		ViewEntry clientEntry = null;
 		Document clientDocument = null;
-		final List<Base> recyclables = new ArrayList<Base>();
 		boolean valid = false;
 		final String token = new BigInteger(130, new SecureRandom()).toString(32);
 		if ("authorization_token".equals(grantType)) {
+			final RecycleBin trash = new RecycleBin();
 			try {
 				final Map<String, Object> responseData = new HashMap<String, Object>();
 				codeView = OAuthProvider.getCurrentInstance().getRegistry().getView("codes");
-				recyclables.add(codeView);
+				trash.add(codeView);
 				codeEntry = codeView.getEntryByKey(code, true);
 				if (codeEntry != null) {
-					recyclables.add(codeEntry);
+					trash.add(codeEntry);
 					codeDocument = codeEntry.getDocument();
-					recyclables.add(codeDocument);
+					trash.add(codeDocument);
 					if (codeDocument.getItemValueString("clientId").equals(clientId)) {
 						if (codeDocument.getItemValueString("state").equals(state)) {
 							if (codeDocument.getItemValueString("redirectURI").equals(redirectUri)) {
 								clientView = OAuthProvider.getCurrentInstance().getRegistry().getView("clients");
-								recyclables.add(clientView);
+								trash.add(clientView);
 								clientEntry = clientView.getEntryByKey(clientId, true);
 								if (clientEntry != null) {
-									recyclables.add(clientEntry);
+									trash.add(clientEntry);
 									clientDocument = clientEntry.getDocument();
-									recyclables.add(clientDocument);
+									trash.add(clientDocument);
 									if (clientDocument.getItemValueString("clientSecret").equals(clientSecret)) {
 										valid = storeAccessToken(response, token, clientId,
 												clientDocument.getItemValueString("containerId"), codeDocument.getItemValueString("scope"),
@@ -94,23 +91,30 @@ public class OAuthTokenRequestService extends AbstractCustomServiceBean {
 											codeDocument.removePermanently(true);
 										}
 									} else {
+										// can't convert an authorization code to an access token without client credentials
 										rejectClientSecret(response);
 									}
 								} else {
+									// not a registered client
 									rejectClientId(response);
 								}
 							} else {
+								// request does not include the redirect URI used to generate the authorization code
 								rejectRedirectionURI(response);
 							}
 						} else {
+							// request does not include the state identifier used to generate the authorization code
 							rejectState(response);
 						}
 					} else {
+						// code is valid, but not for this client
 						rejectClientId(response);
 					}
 				} else {
+					// code has expired, has already been used, or was never valid
 					rejectCode(response);
 				}
+				// TODO: refactor the above to be less visually hideous
 				if (valid) {
 					responseData.put("access_token", token);
 					response.setStatus(200);
@@ -123,7 +127,7 @@ public class OAuthTokenRequestService extends AbstractCustomServiceBean {
 				}
 			} catch (final NotesException e) {
 			} finally {
-				OAuthDominoUtils.incinerate(recyclables);
+				trash.empty();
 			}
 		} else {
 			rejectRequest(response, "The grant_type parameter must be 'authorization_token'");

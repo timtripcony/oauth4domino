@@ -4,6 +4,11 @@ import com.ibm.xsp.application.ApplicationEx;
 
 public class XspUtils {
 	public static String getXspApplicationProperty(final String propertyName, final String defaultValue) {
-		return ApplicationEx.getInstance().getApplicationProperty(propertyName, defaultValue);
+		String result = defaultValue;
+		final ApplicationEx app = ApplicationEx.getInstance();
+		if (app != null) {
+			result = app.getApplicationProperty(propertyName, defaultValue);
+		}
+		return result;
 	}
 }

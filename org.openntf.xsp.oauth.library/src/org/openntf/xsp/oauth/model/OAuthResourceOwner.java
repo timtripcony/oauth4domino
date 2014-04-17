@@ -1,9 +1,6 @@
 package org.openntf.xsp.oauth.model;
 
 import java.io.Serializable;
-import lotus.domino.Session;
-import org.openntf.xsp.oauth.implicit.SudoSession;
-import org.openntf.xsp.oauth.util.SudoUtils;
 
 public class OAuthResourceOwner implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -11,10 +8,6 @@ public class OAuthResourceOwner implements Serializable {
 
 	public String getDistinguishedName() {
 		return distinguishedName;
-	}
-
-	public Session getSession() {
-		return new SudoSession(SudoUtils.getSessionAs(getDistinguishedName()));
 	}
 
 	public void setDistinguishedName(final String distinguishedName) {
