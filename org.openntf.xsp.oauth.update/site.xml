@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.openntf.xsp.oauth.feature_1.0.0.201404170838.jar" id="org.openntf.xsp.oauth.feature" version="1.0.0.201404170838">
+   <feature url="features/org.openntf.xsp.oauth.feature_1.0.0.201404172120.jar" id="org.openntf.xsp.oauth.feature" version="1.0.0.201404172120">
       <category name="osgi"/>
    </feature>
    <category-def name="osgi" label="OSGi">

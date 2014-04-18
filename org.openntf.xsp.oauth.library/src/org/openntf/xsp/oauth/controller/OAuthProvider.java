@@ -34,7 +34,7 @@ public class OAuthProvider implements Serializable {
 		boolean codeCreated = false;
 		final OAuthTemporaryCode codeScope = OAuthTemporaryCode.getCurrentInstance();
 		try {
-			codeDocument = ExtLibUtil.getCurrentDatabase().createDocument();
+			codeDocument = getTokenStore().createDocument();
 			codeDocument.replaceItemValue("form", "code");
 			codeDocument.replaceItemValue("id", codeScope.getCode());
 			codeDocument.replaceItemValue("clientId", codeScope.getClientId());
